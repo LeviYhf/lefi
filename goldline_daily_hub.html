@@ -1,0 +1,2190 @@
+<!DOCTYPE html>
+
+<html lang="en" class="dark">
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+
+  <title>Goldline Daily Hub</title>
+
+  <!-- iOS PWA Web App Capable -->
+
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+  <meta name="apple-mobile-web-app-title" content="Goldline Hub" />
+
+  <meta name="theme-color" content="#0B0C10" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="./icon-192.png" />
+
+
+
+  <!-- Tailwind CSS -->
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- FontAwesome Icons -->
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- Inter Font -->
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+
+
+  <!-- Custom Styles for Mobile Aesthetics and Gold Theme -->
+
+  <style>
+
+    body {
+
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+      background-color: #0B0C10;
+
+      color: #F3F4F6;
+
+      user-select: none;
+
+      -webkit-user-select: none;
+
+      -webkit-tap-highlight-color: transparent;
+
+    }
+
+    /* Custom Scrollbar */
+
+    ::-webkit-scrollbar {
+
+      width: 4px;
+
+    }
+
+    ::-webkit-scrollbar-track {
+
+      background: #0B0C10;
+
+    }
+
+    ::-webkit-scrollbar-thumb {
+
+      background: #3A331A;
+
+      border-radius: 4px;
+
+    }
+
+
+
+    /* Glow Effects */
+
+    .gold-glow {
+
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.15);
+
+    }
+
+    .gold-border-glow {
+
+      border-color: #D4AF37;
+
+      box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+
+    }
+
+
+
+    /* Safe Area Padding for iPhone Notch / Home Bar */
+
+    .pb-safe {
+
+      padding-bottom: calc(4.5rem + env(safe-area-inset-bottom));
+
+    }
+
+    .pt-safe {
+
+      padding-top: max(0.75rem, env(safe-area-inset-top));
+
+    }
+
+  </style>
+
+</head>
+
+<body class="min-h-screen bg-[#0B0C10] text-gray-100 pb-safe antialiased">
+
+
+
+  <!-- STICKY TOP HEADER -->
+
+  <header class="sticky top-0 z-40 bg-[#1F222E]/95 backdrop-blur-md border-b border-[#3A331A] px-4 py-3 pt-safe shadow-lg">
+
+    <div class="max-w-md mx-auto flex items-center justify-between">
+
+      <div class="flex items-center space-x-2.5">
+
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-[#FFD700] via-[#D4AF37] to-[#8C7323] flex items-center justify-center font-black text-black shadow-md border border-[#FFD700]/50 text-lg">
+
+          G
+
+        </div>
+
+        <div>
+
+          <h1 class="font-extrabold text-sm text-[#FFD700] tracking-wider flex items-center gap-1.5 leading-none">
+
+            GOLDLINE HUB
+
+          </h1>
+
+          <p class="text-[10px] text-gray-400 font-medium mt-0.5">Levi Young • #26508</p>
+
+        </div>
+
+      </div>
+
+      <div class="flex items-center space-x-2">
+
+        <button id="alertBtn" onclick="toggleAlerts()" class="p-2 rounded-xl border text-xs transition-all bg-[#3A331A] border-[#D4AF37] text-[#FFD700] hover:scale-105">
+
+          <i class="fa-solid fa-bell"></i>
+
+        </button>
+
+        <span id="currentPresetBadge" class="px-2.5 py-1 text-[11px] font-bold rounded-full bg-[#3A331A] text-[#FFD700] border border-[#D4AF37]/40 shadow-sm">
+
+          A-Day
+
+        </span>
+
+      </div>
+
+    </div>
+
+  </header>
+
+
+
+  <!-- MAIN CONTENT CONTAINER -->
+
+  <main class="max-w-md mx-auto px-4 pt-4">
+
+
+
+    <!-- 1. TODAY TAB -->
+
+    <section id="tab-today" class="tab-content space-y-4">
+
+      <div class="bg-[#1F222E] p-4 rounded-2xl border border-[#3A331A] shadow-md">
+
+        <div class="flex justify-between items-center mb-3">
+
+          <div>
+
+            <h2 class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Today's Integrated Agenda</h2>
+
+            <p id="todayDateStr" class="text-xl font-extrabold text-[#FFD700] mt-0.5"></p>
+
+          </div>
+
+          <select id="todayScheduleSelect" onchange="changeSchedulePreset(this.value)" class="bg-[#0B0C10] text-[#D4AF37] border border-[#3A331A] text-xs font-bold rounded-xl px-2.5 py-2 focus:outline-none focus:border-[#D4AF37]">
+
+            <option value="A-Day">A-Day</option>
+
+            <option value="B-Day">B-Day</option>
+
+            <option value="0-7 Regular">0-7 Regular</option>
+
+            <option value="B-Day Late Start">B-Day Late Start</option>
+
+            <option value="B-Day Mass">B-Day Mass</option>
+
+            <option value="B-Day Rally">B-Day Rally</option>
+
+          </select>
+
+        </div>
+
+
+
+        <div id="alertBanner" class="flex items-center space-x-2 bg-[#3A331A]/40 border border-[#D4AF37]/30 p-2.5 rounded-xl text-xs text-[#FFD700]">
+
+          <i class="fa-solid fa-triangle-exclamation text-[#D4AF37]"></i>
+
+          <span class="font-medium">1-Hour Pre-Event Alerts Enabled for Classes & Athletics</span>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- Chronological Merged Agenda List -->
+
+      <div class="space-y-3">
+
+        <h3 class="text-xs font-extrabold text-[#D4AF37] flex items-center gap-1.5 uppercase tracking-wider">
+
+          <i class="fa-regular fa-clock"></i> Timeline (12-Hour AM/PM)
+
+        </h3>
+
+        <div id="todayMergedList" class="space-y-2.5">
+
+          <!-- Dynamically Populated -->
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- 2. CLASS SCHEDULE TAB -->
+
+    <section id="tab-schedule" class="tab-content hidden space-y-4">
+
+      <div class="bg-[#1F222E] p-4 rounded-2xl border border-[#3A331A] shadow-md flex justify-between items-center">
+
+        <div>
+
+          <h2 class="text-base font-bold text-[#FFD700]">De La Salle Bell Schedule</h2>
+
+          <p class="text-xs text-gray-400">Strictly Period 1 Start (No Zero Period)</p>
+
+        </div>
+
+        <select id="mainScheduleSelect" onchange="changeSchedulePreset(this.value)" class="bg-[#0B0C10] text-[#D4AF37] border border-[#3A331A] text-xs font-bold rounded-xl px-2.5 py-2 focus:outline-none focus:border-[#D4AF37]">
+
+          <option value="A-Day">A-Day</option>
+
+          <option value="B-Day">B-Day</option>
+
+          <option value="0-7 Regular">0-7 Regular</option>
+
+          <option value="B-Day Late Start">B-Day Late Start</option>
+
+          <option value="B-Day Mass">B-Day Mass</option>
+
+          <option value="B-Day Rally">B-Day Rally</option>
+
+        </select>
+
+      </div>
+
+
+
+      <div id="scheduleItemsContainer" class="space-y-2.5">
+
+        <!-- Dynamically Populated -->
+
+      </div>
+
+    </section>
+
+
+
+    <!-- 3. SPORTS CALENDAR TAB -->
+
+    <section id="tab-sports" class="tab-content hidden space-y-4">
+
+      <div class="bg-[#1F222E] p-4 rounded-2xl border border-[#3A331A] space-y-3">
+
+        <div class="flex justify-between items-center">
+
+          <div>
+
+            <h2 class="text-base font-bold text-[#FFD700]">Athletics Calendar</h2>
+
+            <p class="text-xs text-gray-400">Baseball & Soccer Squads</p>
+
+          </div>
+
+          <button onclick="openModal('sportsModal')" class="bg-[#D4AF37] hover:bg-[#FFD700] text-black font-extrabold text-xs px-3.5 py-2 rounded-xl flex items-center gap-1.5 transition-all active:scale-95">
+
+            <i class="fa-solid fa-plus"></i> Add Event
+
+          </button>
+
+        </div>
+
+
+
+        <!-- Filter Pills -->
+
+        <div class="flex gap-1.5 overflow-x-auto pb-1 pt-1 no-scrollbar">
+
+          <button onclick="filterSports('All')" class="sports-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap bg-[#D4AF37] text-black" data-team="All">All Teams</button>
+
+          <button onclick="filterSports('Oaks Baseball')" class="sports-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap bg-[#0B0C10] text-gray-300 border border-[#3A331A]" data-team="Oaks Baseball">Oaks Baseball</button>
+
+          <button onclick="filterSports('DLS Baseball')" class="sports-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap bg-[#0B0C10] text-gray-300 border border-[#3A331A]" data-team="DLS Baseball">DLS Baseball</button>
+
+          <button onclick="filterSports('DLS Soccer')" class="sports-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap bg-[#0B0C10] text-gray-300 border border-[#3A331A]" data-team="DLS Soccer">DLS Soccer</button>
+
+          <button onclick="filterSports('Magic Soccer')" class="sports-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap bg-[#0B0C10] text-gray-300 border border-[#3A331A]" data-team="Magic Soccer">Magic Soccer</button>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- Sync Tools -->
+
+      <div class="bg-[#1F222E] p-4 rounded-2xl border border-[#3A331A] space-y-3">
+
+        <h3 class="text-xs font-bold text-[#D4AF37] uppercase tracking-wider flex items-center gap-1.5">
+
+          <i class="fa-solid fa-arrows-rotate"></i> Byga & TeamSnap Calendar Feed
+
+        </h3>
+
+        <div class="flex gap-2">
+
+          <input type="text" id="icalInput" placeholder="Paste webcal:// or iCal feed URL..." class="bg-[#0B0C10] border border-[#3A331A] text-xs text-gray-200 p-2.5 rounded-xl flex-1 focus:outline-none focus:border-[#D4AF37]" />
+
+          <button onclick="syncIcalFeed()" class="bg-[#3A331A] text-[#FFD700] hover:bg-[#D4AF37] hover:text-black font-bold text-xs px-3.5 rounded-xl transition-all">
+
+            Sync
+
+          </button>
+
+        </div>
+
+      </div>
+
+
+
+      <div id="sportsListContainer" class="space-y-2.5">
+
+        <!-- Dynamically Populated -->
+
+      </div>
+
+    </section>
+
+
+
+    <!-- 4. HOMEWORK & TASKS TAB -->
+
+    <section id="tab-tasks" class="tab-content hidden space-y-4">
+
+      <div class="flex justify-between items-center bg-[#1F222E] p-4 rounded-2xl border border-[#3A331A]">
+
+        <div>
+
+          <h2 class="text-base font-bold text-[#FFD700]">Assignments & Tasks</h2>
+
+          <p class="text-xs text-gray-400">Schoology & PowerSchool Sync</p>
+
+        </div>
+
+        <button onclick="openModal('taskModal')" class="bg-[#D4AF37] hover:bg-[#FFD700] text-black font-extrabold text-xs px-3.5 py-2 rounded-xl flex items-center gap-1.5 transition-all active:scale-95">
+
+          <i class="fa-solid fa-plus"></i> New Task
+
+        </button>
+
+      </div>
+
+
+
+      <div id="tasksListContainer" class="space-y-2.5">
+
+        <!-- Dynamically Populated -->
+
+      </div>
+
+    </section>
+
+
+
+    <!-- 5. FOOD & HYDRATION TAB -->
+
+    <section id="tab-food" class="tab-content hidden space-y-4">
+
+      <div class="bg-[#1F222E] p-4 rounded-2xl border border-[#3A331A] space-y-3">
+
+        <div class="flex justify-between items-center">
+
+          <div>
+
+            <h2 class="text-base font-bold text-[#FFD700]">Nutrition & Hydration</h2>
+
+            <p class="text-xs text-gray-400">9 Daily Fueling Intervals</p>
+
+          </div>
+
+          <div class="text-right">
+
+            <span id="waterLoggedNum" class="text-xl font-extrabold text-[#D4AF37]">0</span>
+
+            <span id="waterTargetNum" class="text-xs text-gray-400"> / 146 oz</span>
+
+          </div>
+
+        </div>
+
+
+
+        <div class="w-full bg-[#0B0C10] h-2.5 rounded-full overflow-hidden border border-[#3A331A]">
+
+          <div id="waterProgressBar" class="bg-gradient-to-r from-blue-500 via-cyan-400 to-[#D4AF37] h-full transition-all duration-300" style="width: 0%"></div>
+
+        </div>
+
+
+
+        <div class="flex justify-between items-center text-xs text-gray-300 pt-1 border-t border-[#3A331A]/60">
+
+          <span>Meals Selected Today:</span>
+
+          <span id="mealsLoggedSummary" class="font-bold text-[#FFD700]">0 of 9 Slots</span>
+
+        </div>
+
+      </div>
+
+
+
+      <div id="foodSlotsContainer" class="space-y-3">
+
+        <!-- Dynamically Populated (9 Slots) -->
+
+      </div>
+
+    </section>
+
+
+
+    <!-- 6. SCHOOL PLAN TAB -->
+
+    <section id="tab-plan" class="tab-content hidden space-y-4">
+
+      <div class="bg-[#1F222E] p-4 rounded-2xl border border-[#3A331A]">
+
+        <h2 class="text-base font-bold text-[#FFD700]">Software Engineering Sequence</h2>
+
+        <p class="text-xs text-gray-400">Grade Prerequisite Pathway: "If you get an A in [Course] -&gt; Unlocks [Next Course]"</p>
+
+      </div>
+
+
+
+      <div class="space-y-4">
+
+        <!-- STEM Pathway -->
+
+        <div class="bg-[#1F222E] p-4 rounded-2xl border border-[#3A331A] space-y-3">
+
+          <h3 class="font-bold text-sm text-[#D4AF37] flex items-center gap-1.5">
+
+            <i class="fa-solid fa-code"></i> STEM & Computer Science Pathway
+
+          </h3>
+
+          <div class="space-y-2 text-xs">
+
+            <div class="p-3 rounded-xl bg-[#0B0C10] border border-[#3A331A] flex justify-between items-center">
+
+              <div>
+
+                <span class="font-bold text-gray-100">Freshman STEM</span>
+
+                <p class="text-[10px] text-gray-400">Grade 9 Required Course</p>
+
+              </div>
+
+              <span class="text-green-400 font-extrabold bg-green-950/60 px-2.5 py-1 rounded-lg border border-green-800">Grade A (Current)</span>
+
+            </div>
+
+            <div class="text-center text-[#D4AF37] text-xs"><i class="fa-solid fa-chevron-down"></i></div>
+
+            <div class="p-3 rounded-xl bg-[#0B0C10] border border-[#3A331A] flex justify-between items-center">
+
+              <div>
+
+                <span class="font-bold text-gray-100">AP Computer Science Principles</span>
+
+                <p class="text-[10px] text-gray-400">Grade 10 Option</p>
+
+              </div>
+
+              <span class="text-[#D4AF37] font-semibold">Unlocked if A in STEM</span>
+
+            </div>
+
+            <div class="text-center text-gray-600 text-xs"><i class="fa-solid fa-chevron-down"></i></div>
+
+            <div class="p-3 rounded-xl bg-[#0B0C10] border border-[#3A331A] flex justify-between items-center">
+
+              <div>
+
+                <span class="font-bold text-gray-100">AP Computer Science A (Java)</span>
+
+                <p class="text-[10px] text-gray-400">Grade 11/12 Option</p>
+
+              </div>
+
+              <span class="text-gray-400">Unlocked if A in AP CSP</span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- Math Pathway -->
+
+        <div class="bg-[#1F222E] p-4 rounded-2xl border border-[#3A331A] space-y-3">
+
+          <h3 class="font-bold text-sm text-[#D4AF37] flex items-center gap-1.5">
+
+            <i class="fa-solid fa-calculator"></i> Mathematics Pathway
+
+          </h3>
+
+          <div class="space-y-2 text-xs">
+
+            <div class="p-3 rounded-xl bg-[#0B0C10] border border-[#3A331A] flex justify-between items-center">
+
+              <span class="font-bold text-gray-100">Algebra 1</span>
+
+              <span class="text-green-400 font-extrabold bg-green-950/60 px-2.5 py-1 rounded-lg border border-green-800">Grade A (Current)</span>
+
+            </div>
+
+            <div class="text-center text-[#D4AF37] text-xs"><i class="fa-solid fa-chevron-down"></i></div>
+
+            <div class="p-3 rounded-xl bg-[#0B0C10] border border-[#3A331A] flex justify-between items-center">
+
+              <span class="font-bold text-gray-100">Honors Geometry</span>
+
+              <span class="text-[#D4AF37] font-semibold">Unlocked if A in Algebra 1</span>
+
+            </div>
+
+            <div class="text-center text-gray-600 text-xs"><i class="fa-solid fa-chevron-down"></i></div>
+
+            <div class="p-3 rounded-xl bg-[#0B0C10] border border-[#3A331A] flex justify-between items-center">
+
+              <span class="font-bold text-gray-100">Honors Algebra 2 / Trig</span>
+
+              <span class="text-gray-400">Unlocked if A in H Geometry</span>
+
+            </div>
+
+            <div class="text-center text-gray-600 text-xs"><i class="fa-solid fa-chevron-down"></i></div>
+
+            <div class="p-3 rounded-xl bg-[#0B0C10] border border-[#3A331A] flex justify-between items-center">
+
+              <span class="font-bold text-gray-100">AP Calculus BC</span>
+
+              <span class="text-gray-400">Unlocked if A in H Alg 2/Trig</span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- All Academic Sequence Summary -->
+
+        <div class="bg-[#1F222E] p-4 rounded-2xl border border-[#3A331A] space-y-2.5 text-xs">
+
+          <h3 class="font-bold text-sm text-[#D4AF37] mb-2">Subject Sequences</h3>
+
+          <p class="text-gray-300">• <strong>Science:</strong> Biology (Grade A) -&gt; Honors Chemistry -&gt; AP Physics C</p>
+
+          <p class="text-gray-300">• <strong>Spanish:</strong> Spanish 1 (Grade A) -&gt; Spanish 2 Honors -&gt; AP Spanish Language</p>
+
+          <p class="text-gray-300">• <strong>English:</strong> English 1 (Grade A) -&gt; English 2 Honors -&gt; AP English Language</p>
+
+          <p class="text-gray-300">• <strong>World History:</strong> World History (Grade A) -&gt; AP US History -&gt; AP Government</p>
+
+          <p class="text-gray-300">• <strong>Theology:</strong> Religious Studies 1 -&gt; Religious Studies 2 -&gt; Honors Religious Studies 3/4</p>
+
+          <p class="pt-2 text-amber-300 font-semibold border-t border-[#3A331A]">
+
+            • <strong>Fine Arts:</strong> Visual/Performing Arts (VPA) 10-Unit Graduation Requirement fulfilled in Grade 10.
+
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- 7. GOALS TAB -->
+
+    <section id="tab-goals" class="tab-content hidden space-y-4">
+
+      <div class="flex justify-between items-center bg-[#1F222E] p-4 rounded-2xl border border-[#3A331A]">
+
+        <div>
+
+          <h2 class="text-base font-bold text-[#FFD700]">Personal & Team Goals</h2>
+
+          <p class="text-xs text-gray-400">Multi-Category Target Tracker</p>
+
+        </div>
+
+        <button onclick="openModal('goalModal')" class="bg-[#D4AF37] hover:bg-[#FFD700] text-black font-extrabold text-xs px-3.5 py-2 rounded-xl flex items-center gap-1.5 transition-all active:scale-95">
+
+          <i class="fa-solid fa-plus"></i> Add Goal
+
+        </button>
+
+      </div>
+
+
+
+      <div id="goalsListContainer" class="space-y-2.5">
+
+        <!-- Dynamically Populated -->
+
+      </div>
+
+    </section>
+
+
+
+    <!-- 8. MY INFO & LOCKERS TAB -->
+
+    <section id="tab-info" class="tab-content hidden space-y-4">
+
+      <!-- ID Card -->
+
+      <div class="bg-gradient-to-br from-[#1F222E] via-[#2A2E3D] to-[#12141C] p-5 rounded-2xl border-2 border-[#D4AF37]/60 shadow-xl space-y-4 gold-glow">
+
+        <div class="flex justify-between items-start">
+
+          <div>
+
+            <span class="text-[10px] font-extrabold tracking-widest text-[#D4AF37] uppercase">De La Salle Student ID</span>
+
+            <h2 class="text-xl font-black text-white mt-0.5">Levi Young</h2>
+
+            <p class="text-xs text-gray-300">Grade 9 (Freshman)</p>
+
+          </div>
+
+          <div class="px-3 py-1.5 bg-[#D4AF37] text-black font-black rounded-xl text-xs shadow-md border border-[#FFD700]">
+
+            #26508
+
+          </div>
+
+        </div>
+
+
+
+        <div class="border-t border-[#3A331A] pt-3 text-xs text-gray-300 space-y-1.5">
+
+          <div class="flex justify-between">
+
+            <span class="text-gray-400">School:</span>
+
+            <span class="font-bold text-gray-100">De La Salle High School</span>
+
+          </div>
+
+          <div class="flex justify-between">
+
+            <span class="text-gray-400">Academic Sequence:</span>
+
+            <span class="font-bold text-[#FFD700]">Software Engineering Track</span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- Locker Combos -->
+
+      <div class="space-y-3">
+
+        <h3 class="text-xs font-extrabold text-[#D4AF37] uppercase tracking-wider">Locker Combinations</h3>
+
+        <div class="bg-[#1F222E] p-4 rounded-2xl border border-[#3A331A] flex justify-between items-center shadow-sm">
+
+          <div class="flex items-center space-x-3">
+
+            <span class="text-2xl">🏋️‍♂️</span>
+
+            <div>
+
+              <h4 class="font-bold text-sm text-gray-100">Room 51 Locker Room</h4>
+
+              <p class="text-[11px] text-gray-400">PE & Athletics Access</p>
+
+            </div>
+
+          </div>
+
+          <span class="font-mono text-base font-extrabold text-[#FFD700] bg-[#0B0C10] px-3.5 py-1.5 rounded-xl border border-[#3A331A]">
+
+            17 - 03 - 25
+
+          </span>
+
+        </div>
+
+
+
+        <div class="bg-[#1F222E] p-4 rounded-2xl border border-[#3A331A] flex justify-between items-center shadow-sm">
+
+          <div class="flex items-center space-x-3">
+
+            <span class="text-2xl">⚽</span>
+
+            <div>
+
+              <h4 class="font-bold text-sm text-gray-100">Room 53 Locker Room</h4>
+
+              <p class="text-[11px] text-gray-400">Field Athletics Locker</p>
+
+            </div>
+
+          </div>
+
+          <span class="font-mono text-base font-extrabold text-[#FFD700] bg-[#0B0C10] px-3.5 py-1.5 rounded-xl border border-[#3A331A]">
+
+            35 - 13 - 35
+
+          </span>
+
+        </div>
+
+
+
+        <div class="bg-[#1F222E] p-4 rounded-2xl border border-[#3A331A] flex justify-between items-center shadow-sm">
+
+          <div class="flex items-center space-x-3">
+
+            <span class="text-2xl">🎒</span>
+
+            <div>
+
+              <h4 class="font-bold text-sm text-gray-100">Personal Locker #256</h4>
+
+              <p class="text-[11px] text-gray-400">Main Quad Corridor</p>
+
+            </div>
+
+          </div>
+
+          <span class="font-mono text-base font-extrabold text-[#FFD700] bg-[#0B0C10] px-3.5 py-1.5 rounded-xl border border-[#3A331A]">
+
+            11 - 31 - 9
+
+          </span>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+  </main>
+
+
+
+  <!-- MODALS -->
+
+
+
+  <!-- Task Modal -->
+
+  <div id="taskModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+
+    <div class="bg-[#1F222E] border border-[#D4AF37] rounded-2xl p-5 w-full max-w-sm space-y-4 gold-glow">
+
+      <div class="flex justify-between items-center">
+
+        <h3 class="text-base font-bold text-[#FFD700]">Add Assignment</h3>
+
+        <button onclick="closeModal('taskModal')" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+
+      </div>
+
+      <input type="text" id="newTaskTitle" placeholder="Assignment Title" class="w-full bg-[#0B0C10] border border-[#3A331A] text-xs text-gray-100 p-3 rounded-xl focus:outline-none focus:border-[#D4AF37]" />
+
+      <select id="newTaskCourse" class="w-full bg-[#0B0C10] border border-[#3A331A] text-xs text-gray-100 p-3 rounded-xl focus:outline-none focus:border-[#D4AF37]">
+
+        <option value="Religious Studies 1">Religious Studies 1</option>
+
+        <option value="1st Aid/Health S1">1st Aid/Health S1</option>
+
+        <option value="World History">World History</option>
+
+        <option value="Freshman STEM">Freshman STEM</option>
+
+        <option value="English 1">English 1</option>
+
+        <option value="Spanish 1">Spanish 1</option>
+
+        <option value="Algebra 1">Algebra 1</option>
+
+      </select>
+
+      <input type="date" id="newTaskDueDate" class="w-full bg-[#0B0C10] border border-[#3A331A] text-xs text-gray-100 p-3 rounded-xl focus:outline-none focus:border-[#D4AF37]" />
+
+      <select id="newTaskPriority" class="w-full bg-[#0B0C10] border border-[#3A331A] text-xs text-gray-100 p-3 rounded-xl focus:outline-none focus:border-[#D4AF37]">
+
+        <option value="High">High Priority</option>
+
+        <option value="Medium" selected>Medium Priority</option>
+
+        <option value="Low">Low Priority</option>
+
+      </select>
+
+      <div class="flex justify-end gap-2 pt-2">
+
+        <button onclick="closeModal('taskModal')" class="px-4 py-2 text-xs text-gray-400 font-semibold">Cancel</button>
+
+        <button onclick="saveNewTask()" class="bg-[#D4AF37] text-black font-extrabold text-xs px-5 py-2 rounded-xl">Save</button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- Sports Modal -->
+
+  <div id="sportsModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+
+    <div class="bg-[#1F222E] border border-[#D4AF37] rounded-2xl p-5 w-full max-w-sm space-y-3 gold-glow">
+
+      <div class="flex justify-between items-center">
+
+        <h3 class="text-base font-bold text-[#FFD700]">Add Athletics Event</h3>
+
+        <button onclick="closeModal('sportsModal')" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+
+      </div>
+
+      <select id="newSportTeam" class="w-full bg-[#0B0C10] border border-[#3A331A] text-xs text-gray-100 p-3 rounded-xl focus:outline-none focus:border-[#D4AF37]">
+
+        <option value="Oaks Baseball">Oaks Baseball</option>
+
+        <option value="DLS Baseball">DLS Baseball</option>
+
+        <option value="DLS Soccer">DLS Soccer</option>
+
+        <option value="Magic Soccer">Magic Soccer</option>
+
+      </select>
+
+      <input type="text" id="newSportTitle" placeholder="Title (e.g. Game vs Monte Vista)" class="w-full bg-[#0B0C10] border border-[#3A331A] text-xs text-gray-100 p-3 rounded-xl focus:outline-none focus:border-[#D4AF37]" />
+
+      <input type="date" id="newSportDate" class="w-full bg-[#0B0C10] border border-[#3A331A] text-xs text-gray-100 p-3 rounded-xl focus:outline-none focus:border-[#D4AF37]" />
+
+      <input type="text" id="newSportTime" placeholder="12-Hr Time (e.g. 4:00 PM - 5:30 PM)" class="w-full bg-[#0B0C10] border border-[#3A331A] text-xs text-gray-100 p-3 rounded-xl focus:outline-none focus:border-[#D4AF37]" />
+
+      <input type="text" id="newSportLocation" placeholder="Location (e.g. Owen Owens Field)" class="w-full bg-[#0B0C10] border border-[#3A331A] text-xs text-gray-100 p-3 rounded-xl focus:outline-none focus:border-[#D4AF37]" />
+
+      <div class="flex justify-end gap-2 pt-2">
+
+        <button onclick="closeModal('sportsModal')" class="px-4 py-2 text-xs text-gray-400 font-semibold">Cancel</button>
+
+        <button onclick="saveNewSport()" class="bg-[#D4AF37] text-black font-extrabold text-xs px-5 py-2 rounded-xl">Save</button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- Goal Modal -->
+
+  <div id="goalModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+
+    <div class="bg-[#1F222E] border border-[#D4AF37] rounded-2xl p-5 w-full max-w-sm space-y-3 gold-glow">
+
+      <div class="flex justify-between items-center">
+
+        <h3 class="text-base font-bold text-[#FFD700]">Add New Goal</h3>
+
+        <button onclick="closeModal('goalModal')" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+
+      </div>
+
+      <select id="newGoalCategory" class="w-full bg-[#0B0C10] border border-[#3A331A] text-xs text-gray-100 p-3 rounded-xl focus:outline-none focus:border-[#D4AF37]">
+
+        <option value="School">School</option>
+
+        <option value="Mentally">Mentally</option>
+
+        <option value="Godly">Godly</option>
+
+        <option value="Physically">Physically</option>
+
+        <option value="Oaks Baseball">Oaks Baseball</option>
+
+        <option value="DLS Baseball">DLS Baseball</option>
+
+        <option value="DLS Soccer">DLS Soccer</option>
+
+        <option value="Magic Soccer">Magic Soccer</option>
+
+      </select>
+
+      <textarea id="newGoalText" placeholder="Describe your target..." rows="3" class="w-full bg-[#0B0C10] border border-[#3A331A] text-xs text-gray-100 p-3 rounded-xl focus:outline-none focus:border-[#D4AF37]"></textarea>
+
+      <div class="flex justify-end gap-2 pt-2">
+
+        <button onclick="closeModal('goalModal')" class="px-4 py-2 text-xs text-gray-400 font-semibold">Cancel</button>
+
+        <button onclick="saveNewGoal()" class="bg-[#D4AF37] text-black font-extrabold text-xs px-5 py-2 rounded-xl">Save</button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- FIXED BOTTOM IPHONE NAVIGATION BAR -->
+
+  <nav class="fixed bottom-0 left-0 right-0 bg-[#1F222E]/98 backdrop-blur-lg border-t border-[#3A331A] py-2 z-40 shadow-2xl">
+
+    <div class="max-w-md mx-auto grid grid-cols-8 gap-0.5 px-1">
+
+      <button onclick="switchTab('today')" id="nav-today" class="nav-btn flex flex-col items-center py-1 rounded-xl text-[#FFD700] bg-[#3A331A]/60">
+
+        <i class="fa-regular fa-clock text-sm"></i>
+
+        <span class="text-[8px] font-bold mt-0.5">Today</span>
+
+      </button>
+
+      <button onclick="switchTab('schedule')" id="nav-schedule" class="nav-btn flex flex-col items-center py-1 rounded-xl text-gray-400 hover:text-gray-200">
+
+        <i class="fa-regular fa-calendar-days text-sm"></i>
+
+        <span class="text-[8px] font-bold mt-0.5">Class</span>
+
+      </button>
+
+      <button onclick="switchTab('sports')" id="nav-sports" class="nav-btn flex flex-col items-center py-1 rounded-xl text-gray-400 hover:text-gray-200">
+
+        <i class="fa-solid fa-trophy text-sm"></i>
+
+        <span class="text-[8px] font-bold mt-0.5">Sports</span>
+
+      </button>
+
+      <button onclick="switchTab('tasks')" id="nav-tasks" class="nav-btn flex flex-col items-center py-1 rounded-xl text-gray-400 hover:text-gray-200">
+
+        <i class="fa-regular fa-square-check text-sm"></i>
+
+        <span class="text-[8px] font-bold mt-0.5">Tasks</span>
+
+      </button>
+
+      <button onclick="switchTab('food')" id="nav-food" class="nav-btn flex flex-col items-center py-1 rounded-xl text-gray-400 hover:text-gray-200">
+
+        <i class="fa-solid fa-utensils text-sm"></i>
+
+        <span class="text-[8px] font-bold mt-0.5">Food</span>
+
+      </button>
+
+      <button onclick="switchTab('plan')" id="nav-plan" class="nav-btn flex flex-col items-center py-1 rounded-xl text-gray-400 hover:text-gray-200">
+
+        <i class="fa-solid fa-shield-halved text-sm"></i>
+
+        <span class="text-[8px] font-bold mt-0.5">Plan</span>
+
+      </button>
+
+      <button onclick="switchTab('goals')" id="nav-goals" class="nav-btn flex flex-col items-center py-1 rounded-xl text-gray-400 hover:text-gray-200">
+
+        <i class="fa-solid fa-bullseye text-sm"></i>
+
+        <span class="text-[8px] font-bold mt-0.5">Goals</span>
+
+      </button>
+
+      <button onclick="switchTab('info')" id="nav-info" class="nav-btn flex flex-col items-center py-1 rounded-xl text-gray-400 hover:text-gray-200">
+
+        <i class="fa-regular fa-user text-sm"></i>
+
+        <span class="text-[8px] font-bold mt-0.5">Info</span>
+
+      </button>
+
+    </div>
+
+  </nav>
+
+
+
+  <!-- APPLICATION LOGIC JS -->
+
+  <script>
+
+    // PRESET SCHEDULE DATA (Strictly 12-Hour AM/PM)
+
+    const SCHEDULE_PRESETS = {
+
+      "A-Day": [
+
+        { period: "Period 1", name: "Religious Studies 1", teacher: "Br. John Hoover", room: "Rm 204", start: "8:15 AM", end: "9:35 AM" },
+
+        { period: "Break", name: "Morning Break", teacher: "", room: "Campus Quad", start: "9:35 AM", end: "9:50 AM" },
+
+        { period: "Period 2", name: "1st Aid/Health S1 / Study Hall S2", teacher: "Douglas Vierra / Paul Guaragna", room: "Rm 102 / 105", start: "9:55 AM", end: "11:15 AM" },
+
+        { period: "Lunch", name: "Lunch Break", teacher: "", room: "Campus Quad", start: "11:15 AM", end: "11:55 AM" },
+
+        { period: "Period 3", name: "World History", teacher: "Kevin Fordon", room: "Rm 308", start: "12:00 PM", end: "1:20 PM" },
+
+        { period: "Period 7", name: "Freshman STEM", teacher: "Danielle Davisson", room: "Rm 402", start: "1:25 PM", end: "2:45 PM" }
+
+      ],
+
+      "B-Day": [
+
+        { period: "Period 4", name: "English 1", teacher: "Greg Brown-Davis", room: "Rm 212", start: "8:15 AM", end: "9:35 AM" },
+
+        { period: "Break", name: "Morning Break", teacher: "", room: "Campus Quad", start: "9:35 AM", end: "9:50 AM" },
+
+        { period: "Period 5", name: "Spanish 1", teacher: "Gabby Galvez", room: "Rm 115", start: "9:55 AM", end: "11:15 AM" },
+
+        { period: "Lunch", name: "Lunch Break", teacher: "", room: "Campus Quad", start: "11:15 AM", end: "11:55 AM" },
+
+        { period: "Period 6", name: "Algebra 1", teacher: "Marcus Chin", room: "Rm 301", start: "12:00 PM", end: "1:20 PM" }
+
+      ],
+
+      "0-7 Regular": [
+
+        { period: "Period 1", name: "Religious Studies 1", teacher: "Br. John Hoover", room: "Rm 204", start: "8:15 AM", end: "9:05 AM" },
+
+        { period: "Period 2", name: "1st Aid / Health S1", teacher: "Douglas Vierra", room: "Rm 102", start: "9:10 AM", end: "10:00 AM" },
+
+        { period: "Break", name: "Morning Break", teacher: "", room: "Campus Quad", start: "10:00 AM", end: "10:15 AM" },
+
+        { period: "Period 3", name: "World History", teacher: "Kevin Fordon", room: "Rm 308", start: "10:20 AM", end: "11:10 AM" },
+
+        { period: "Period 4", name: "English 1", teacher: "Greg Brown-Davis", room: "Rm 212", start: "11:15 AM", end: "12:05 PM" },
+
+        { period: "Lunch", name: "Lunch Break", teacher: "", room: "Campus Quad", start: "12:05 PM", end: "12:45 PM" },
+
+        { period: "Period 5", name: "Spanish 1", teacher: "Gabby Galvez", room: "Rm 115", start: "12:50 PM", end: "1:40 PM" },
+
+        { period: "Period 6", name: "Algebra 1", teacher: "Marcus Chin", room: "Rm 301", start: "1:45 PM", end: "2:35 PM" },
+
+        { period: "Period 7", name: "Freshman STEM", teacher: "Danielle Davisson", room: "Rm 402", start: "2:40 PM", end: "3:30 PM" }
+
+      ],
+
+      "B-Day Late Start": [
+
+        { period: "Period 4", name: "English 1", teacher: "Greg Brown-Davis", room: "Rm 212", start: "9:30 AM", end: "10:40 AM" },
+
+        { period: "Break", name: "Morning Break", teacher: "", room: "Campus Quad", start: "10:40 AM", end: "10:55 AM" },
+
+        { period: "Period 5", name: "Spanish 1", teacher: "Gabby Galvez", room: "Rm 115", start: "11:00 AM", end: "12:10 PM" },
+
+        { period: "Lunch", name: "Lunch Break", teacher: "", room: "Campus Quad", start: "12:10 PM", end: "12:50 PM" },
+
+        { period: "Period 6", name: "Algebra 1", teacher: "Marcus Chin", room: "Rm 301", start: "12:55 PM", end: "2:05 PM" }
+
+      ],
+
+      "B-Day Mass": [
+
+        { period: "Period 4", name: "English 1", teacher: "Greg Brown-Davis", room: "Rm 212", start: "8:15 AM", end: "9:25 AM" },
+
+        { period: "Mass", name: "All-School Mass / Liturgy", teacher: "All School", room: "Gymnasium", start: "9:35 AM", end: "10:45 AM" },
+
+        { period: "Break", name: "Morning Break", teacher: "", room: "Campus Quad", start: "10:45 AM", end: "11:00 AM" },
+
+        { period: "Period 5", name: "Spanish 1", teacher: "Gabby Galvez", room: "Rm 115", start: "11:05 AM", end: "12:15 PM" },
+
+        { period: "Lunch", name: "Lunch Break", teacher: "", room: "Campus Quad", start: "12:15 PM", end: "12:55 PM" },
+
+        { period: "Period 6", name: "Algebra 1", teacher: "Marcus Chin", room: "Rm 301", start: "1:00 PM", end: "2:10 PM" }
+
+      ],
+
+      "B-Day Rally": [
+
+        { period: "Period 4", name: "English 1", teacher: "Greg Brown-Davis", room: "Rm 212", start: "8:15 AM", end: "9:25 AM" },
+
+        { period: "Period 5", name: "Spanish 1", teacher: "Gabby Galvez", room: "Rm 115", start: "9:35 AM", end: "10:45 AM" },
+
+        { period: "Lunch", name: "Lunch Break", teacher: "", room: "Campus Quad", start: "10:45 AM", end: "11:25 AM" },
+
+        { period: "Period 6", name: "Algebra 1", teacher: "Marcus Chin", room: "Rm 301", start: "11:30 AM", end: "12:40 PM" },
+
+        { period: "Rally", name: "School Spirit Rally", teacher: "All School", room: "Gymnasium", start: "12:50 PM", end: "1:45 PM" }
+
+      ]
+
+    };
+
+
+
+    // 9 DAILY FOOD SLOTS
+
+    const FOOD_SLOTS_CONFIG = [
+
+      { id: 1, title: "7:00 AM - Breakfast at Home", waterTarget: 18, options: ["Oatmeal with Berries & Honey", "3 Scrambled Eggs + Whole Wheat Toast", "Protein Smoothie with Whey & Banana"] },
+
+      { id: 2, title: "9:35 AM - Break 1", waterTarget: 14, options: ["Greek Yogurt with Granola", "Apple + Peanut Butter", "Handful of Almonds & Dried Cranberries"] },
+
+      { id: 3, title: "11:15 AM - Lunch", waterTarget: 18, options: ["Grilled Chicken Rice Bowl with Avocados", "Turkey & Cheese Wrap on Whole Wheat", "Pasta with Lean Ground Beef & Veggies"] },
+
+      { id: 4, title: "1:25 PM - Break 2", waterTarget: 14, options: ["Quest Protein Bar", "Rice Cakes with Almond Butter", "Trail Mix & String Cheese"] },
+
+      { id: 5, title: "3:30 PM - Pre-Workout", waterTarget: 18, options: ["Banana with Honey", "Rice Krispie & Electrolytes", "Bagel with Cream Cheese"] },
+
+      { id: 6, title: "5:30 PM - Post-Workout", waterTarget: 22, options: ["Whey Protein Shake + Creatine", "Chocolate Milk & Rice Snack", "Lean Turkey Jerky & Orange"] },
+
+      { id: 7, title: "6:45 PM - Afterschool Snack", waterTarget: 14, options: ["Cottage Cheese & Peaches", "Hummus with Whole Grain Pita", "Beef Rice Bowl Quick Bite"] },
+
+      { id: 8, title: "8:00 PM - Dinner", waterTarget: 18, options: ["Salmon Filet with Sweet Potato & Asparagus", "Sirloin Steak with Brown Rice & Broccoli", "Chicken Breast Fajita Plate with Beans"] },
+
+      { id: 9, title: "9:30 PM - Late Night Snack", waterTarget: 10, options: ["Casein Protein Shake", "Greek Yogurt with Peanut Butter", "Warm Milk & Handful of Walnuts"] }
+
+    ];
+
+
+
+    // STATE VARIABLES WITH LOCALSTORAGE PERSISTENCE
+
+    let selectedPreset = localStorage.getItem('goldline_preset') || 'A-Day';
+
+    let sportsFilter = 'All';
+
+    let alertsEnabled = localStorage.getItem('goldline_alerts') !== 'false';
+
+
+
+    let tasks = JSON.parse(localStorage.getItem('goldline_tasks')) || [
+
+      { id: 1, title: "Read Chapter 4 - World History", course: "World History", dueDate: "2026-10-14", priority: "High", completed: false },
+
+      { id: 2, title: "Algebra 1 Worksheet #7", course: "Algebra 1", dueDate: "2026-10-15", priority: "Medium", completed: false },
+
+      { id: 3, title: "Spanish Vocabulary Flashcards", course: "Spanish 1", dueDate: "2026-10-16", priority: "Low", completed: true }
+
+    ];
+
+
+
+    let sportsEvents = JSON.parse(localStorage.getItem('goldline_sports')) || [
+
+      { id: 1, team: "Oaks Baseball", title: "Practice @ Field 2", date: "2026-10-13", time: "4:00 PM - 6:00 PM", location: "Oaks Field" },
+
+      { id: 2, team: "DLS Baseball", title: "Weight Room Session", date: "2026-10-14", time: "3:30 PM - 4:30 PM", location: "DLS Fitness Center" },
+
+      { id: 3, team: "Magic Soccer", title: "Scrimmage vs Stars", date: "2026-10-16", time: "5:30 PM - 7:00 PM", location: "Central Turf" },
+
+      { id: 4, team: "DLS Soccer", title: "Freshman Match vs Monte Vista", date: "2026-10-17", time: "10:00 AM - 11:30 AM", location: "Owen Owens Field" }
+
+    ];
+
+
+
+    let foodLogs = JSON.parse(localStorage.getItem('goldline_foodlogs')) || {};
+
+
+
+    let goals = JSON.parse(localStorage.getItem('goldline_goals')) || [
+
+      { id: 1, category: "Physically", text: "Bench press 185 lbs by end of fall term", completed: false },
+
+      { id: 2, category: "Oaks Baseball", text: "Maintain .350+ batting average in fall league", completed: true },
+
+      { id: 3, category: "School", text: "Maintain 4.0 GPA for Software Engineering track prerequisites", completed: false },
+
+      { id: 4, category: "Godly", text: "Attend weekly chapel and daily reflection", completed: false },
+
+      { id: 5, category: "DLS Soccer", text: "Start in 80%+ of freshman matches", completed: false }
+
+    ];
+
+
+
+    // SAVE STATE HELPERS
+
+    function saveTasks() { localStorage.setItem('goldline_tasks', JSON.stringify(tasks)); renderTasks(); }
+
+    function saveSports() { localStorage.setItem('goldline_sports', JSON.stringify(sportsEvents)); renderSports(); renderTodayAgenda(); }
+
+    function saveFood() { localStorage.setItem('goldline_foodlogs', JSON.stringify(foodLogs)); renderFood(); }
+
+    function saveGoals() { localStorage.setItem('goldline_goals', JSON.stringify(goals)); renderGoals(); }
+
+
+
+    // INITIALIZATION ON LOAD
+
+    window.addEventListener('DOMContentLoaded', () => {
+
+      // Date Display
+
+      const todayDate = new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+
+      document.getElementById('todayDateStr').innerText = todayDate;
+
+
+
+      // Set initial preset dropdown values
+
+      document.getElementById('todayScheduleSelect').value = selectedPreset;
+
+      document.getElementById('mainScheduleSelect').value = selectedPreset;
+
+      document.getElementById('currentPresetBadge').innerText = selectedPreset;
+
+
+
+      // Alert UI setup
+
+      updateAlertUI();
+
+
+
+      // Render All Views
+
+      renderTodayAgenda();
+
+      renderSchedule();
+
+      renderSports();
+
+      renderTasks();
+
+      renderFood();
+
+      renderGoals();
+
+    });
+
+
+
+    // NAVIGATION
+
+    function switchTab(tabId) {
+
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+
+      document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+
+
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+
+        btn.classList.remove('text-[#FFD700]', 'bg-[#3A331A]/60');
+
+        btn.classList.add('text-gray-400');
+
+      });
+
+
+
+      const activeBtn = document.getElementById(`nav-${tabId}`);
+
+      if (activeBtn) {
+
+        activeBtn.classList.remove('text-gray-400');
+
+        activeBtn.classList.add('text-[#FFD700]', 'bg-[#3A331A]/60');
+
+      }
+
+
+
+      window.scrollTo(0, 0);
+
+    }
+
+
+
+    function changeSchedulePreset(presetKey) {
+
+      selectedPreset = presetKey;
+
+      localStorage.setItem('goldline_preset', selectedPreset);
+
+      document.getElementById('todayScheduleSelect').value = selectedPreset;
+
+      document.getElementById('mainScheduleSelect').value = selectedPreset;
+
+      document.getElementById('currentPresetBadge').innerText = selectedPreset;
+
+
+
+      renderSchedule();
+
+      renderTodayAgenda();
+
+    }
+
+
+
+    function toggleAlerts() {
+
+      alertsEnabled = !alertsEnabled;
+
+      localStorage.setItem('goldline_alerts', alertsEnabled);
+
+      updateAlertUI();
+
+    }
+
+
+
+    function updateAlertUI() {
+
+      const alertBtn = document.getElementById('alertBtn');
+
+      const banner = document.getElementById('alertBanner');
+
+      if (alertsEnabled) {
+
+        alertBtn.className = "p-2 rounded-xl border text-xs transition-all bg-[#3A331A] border-[#D4AF37] text-[#FFD700]";
+
+        banner.classList.remove('hidden');
+
+      } else {
+
+        alertBtn.className = "p-2 rounded-xl border text-xs transition-all bg-[#0B0C10] border-gray-800 text-gray-500";
+
+        banner.classList.add('hidden');
+
+      }
+
+    }
+
+
+
+    // 1. TODAY MERGED AGENDA RENDERER
+
+    function renderTodayAgenda() {
+
+      const container = document.getElementById('todayMergedList');
+
+      container.innerHTML = '';
+
+
+
+      const classList = SCHEDULE_PRESETS[selectedPreset] || [];
+
+
+
+      // Academic items
+
+      classList.forEach(item => {
+
+        const div = document.createElement('div');
+
+        div.className = "bg-[#1F222E] p-3.5 rounded-2xl border border-[#3A331A] flex justify-between items-center hover:border-[#D4AF37]/50 transition-all";
+
+        div.innerHTML = `
+
+          <div>
+
+            <div class="flex items-center space-x-2">
+
+              <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-[#3A331A] text-[#FFD700]">
+
+                ${item.period}
+
+              </span>
+
+              <span class="font-bold text-sm text-gray-100">${item.name}</span>
+
+            </div>
+
+            ${item.teacher ? `<p class="text-xs text-gray-400 mt-1 pl-1">${item.teacher} • <span class="text-gray-300 font-medium">${item.room}</span></p>` : ''}
+
+          </div>
+
+          <div class="text-right flex-shrink-0">
+
+            <span class="text-xs font-mono text-[#D4AF37] bg-[#0B0C10] px-2.5 py-1 rounded-lg border border-[#3A331A]">
+
+              ${item.start} - ${item.end}
+
+            </span>
+
+          </div>
+
+        `;
+
+        container.appendChild(div);
+
+      });
+
+
+
+      // Today Sports items
+
+      sportsEvents.forEach(sport => {
+
+        const teamBadgeColor = sport.team.includes('Oaks') ? 'bg-amber-900/80 text-amber-200 border border-amber-600' :
+
+                               sport.team.includes('Magic') ? 'bg-purple-900/80 text-purple-200 border border-purple-600' :
+
+                               'bg-[#D4AF37] text-black font-extrabold';
+
+
+
+        const div = document.createElement('div');
+
+        div.className = "bg-gradient-to-r from-[#1F222E] to-[#2A2E3D] p-3.5 rounded-2xl border border-[#D4AF37]/40 flex justify-between items-center shadow-md";
+
+        div.innerHTML = `
+
+          <div>
+
+            <div class="flex items-center space-x-2">
+
+              <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-md ${teamBadgeColor}">
+
+                ${sport.team}
+
+              </span>
+
+              <span class="font-bold text-sm text-white">${sport.title}</span>
+
+            </div>
+
+            <p class="text-xs text-gray-300 mt-1 pl-1 flex items-center gap-1">
+
+              <i class="fa-solid fa-location-dot text-[#D4AF37] text-[10px]"></i> ${sport.location}
+
+            </p>
+
+          </div>
+
+          <div class="text-right flex-shrink-0">
+
+            <span class="text-xs font-mono text-[#FFD700] bg-[#0B0C10] px-2.5 py-1 rounded-lg border border-[#3A331A]">
+
+              ${sport.time}
+
+            </span>
+
+          </div>
+
+        `;
+
+        container.appendChild(div);
+
+      });
+
+    }
+
+
+
+    // 2. CLASS SCHEDULE RENDERER
+
+    function renderSchedule() {
+
+      const container = document.getElementById('scheduleItemsContainer');
+
+      container.innerHTML = '';
+
+
+
+      const list = SCHEDULE_PRESETS[selectedPreset] || [];
+
+      list.forEach(item => {
+
+        const div = document.createElement('div');
+
+        div.className = "bg-[#1F222E] p-4 rounded-2xl border border-[#3A331A] hover:border-[#D4AF37] transition-all";
+
+        div.innerHTML = `
+
+          <div class="flex justify-between items-start mb-1.5">
+
+            <span class="text-xs font-bold px-2.5 py-0.5 rounded-md bg-[#3A331A] text-[#FFD700] uppercase tracking-wider">
+
+              ${item.period}
+
+            </span>
+
+            <span class="text-xs font-mono text-[#D4AF37] bg-[#0B0C10] px-2.5 py-1 rounded-lg border border-[#3A331A]">
+
+              ${item.start} - ${item.end}
+
+            </span>
+
+          </div>
+
+          <h3 class="font-bold text-base text-gray-100 mt-1">${item.name}</h3>
+
+          ${item.teacher ? `
+
+            <div class="flex justify-between items-center text-xs text-gray-400 mt-2.5 pt-2 border-t border-[#3A331A]/50">
+
+              <span>Teacher: <strong class="text-gray-200">${item.teacher}</strong></span>
+
+              <span class="bg-[#0B0C10] px-2 py-0.5 rounded-md text-[#D4AF37] border border-[#3A331A] font-mono">${item.room}</span>
+
+            </div>
+
+          ` : ''}
+
+        `;
+
+        container.appendChild(div);
+
+      });
+
+    }
+
+
+
+    // 3. SPORTS RENDERER
+
+    function filterSports(team) {
+
+      sportsFilter = team;
+
+      document.querySelectorAll('.sports-filter-btn').forEach(btn => {
+
+        if (btn.getAttribute('data-team') === team) {
+
+          btn.className = "sports-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap bg-[#D4AF37] text-black";
+
+        } else {
+
+          btn.className = "sports-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap bg-[#0B0C10] text-gray-300 border border-[#3A331A]";
+
+        }
+
+      });
+
+      renderSports();
+
+    }
+
+
+
+    function renderSports() {
+
+      const container = document.getElementById('sportsListContainer');
+
+      container.innerHTML = '';
+
+
+
+      const filtered = sportsEvents.filter(s => sportsFilter === 'All' || s.team === sportsFilter);
+
+
+
+      if (filtered.length === 0) {
+
+        container.innerHTML = `<div class="bg-[#1F222E] p-6 text-center text-xs text-gray-400 rounded-2xl border border-[#3A331A]">No athletics events logged for ${sportsFilter}.</div>`;
+
+        return;
+
+      }
+
+
+
+      filtered.forEach(sport => {
+
+        const teamBadgeColor = sport.team.includes('Oaks') ? 'bg-amber-900/60 text-amber-200 border border-amber-600' :
+
+                               sport.team.includes('Magic') ? 'bg-purple-900/60 text-purple-200 border border-purple-600' :
+
+                               'bg-[#3A331A] text-[#FFD700] border border-[#D4AF37]/50';
+
+
+
+        const div = document.createElement('div');
+
+        div.className = "bg-[#1F222E] p-4 rounded-2xl border border-[#3A331A] flex justify-between items-center";
+
+        div.innerHTML = `
+
+          <div class="space-y-1">
+
+            <div class="flex items-center gap-2">
+
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-md uppercase ${teamBadgeColor}">
+
+                ${sport.team}
+
+              </span>
+
+              <span class="text-xs text-gray-400">${sport.date}</span>
+
+            </div>
+
+            <h4 class="font-bold text-sm text-gray-100">${sport.title}</h4>
+
+            <p class="text-xs text-gray-400 flex items-center gap-1">
+
+              <i class="fa-solid fa-location-dot text-[#D4AF37] text-[10px]"></i> ${sport.location}
+
+            </p>
+
+          </div>
+
+          <div class="flex flex-col items-end space-y-2">
+
+            <span class="text-xs font-mono text-[#D4AF37] bg-[#0B0C10] px-2.5 py-1 rounded-lg border border-[#3A331A]">
+
+              ${sport.time}
+
+            </span>
+
+            <button onclick="deleteSport(${sport.id})" class="text-gray-500 hover:text-red-400 transition-colors p-1" title="Delete event">
+
+              <i class="fa-regular fa-trash-can text-sm"></i>
+
+            </button>
+
+          </div>
+
+        `;
+
+        container.appendChild(div);
+
+      });
+
+    }
+
+
+
+    function syncIcalFeed() {
+
+      const input = document.getElementById('icalInput');
+
+      if (input.value.trim() !== '') {
+
+        alert("A calendar-feed URL was entered, but this version does not import external iCal feeds yet. You can still add events manually.");
+
+      }
+
+    }
+
+
+
+    function saveNewSport() {
+
+      const team = document.getElementById('newSportTeam').value;
+
+      const title = document.getElementById('newSportTitle').value.trim();
+
+      const date = document.getElementById('newSportDate').value;
+
+      const time = document.getElementById('newSportTime').value.trim();
+
+      const location = document.getElementById('newSportLocation').value.trim();
+
+
+
+      if (!title || !date || !time) { alert("Please complete title, date, and 12-hr time."); return; }
+
+
+
+      sportsEvents.push({ id: Date.now(), team, title, date, time, location: location || 'DLS Field' });
+
+      saveSports();
+
+      closeModal('sportsModal');
+
+    }
+
+
+
+    function deleteSport(id) {
+
+      sportsEvents = sportsEvents.filter(s => s.id !== id);
+
+      saveSports();
+
+    }
+
+
+
+    // 4. HOMEWORK & TASKS RENDERER
+
+    function renderTasks() {
+
+      const container = document.getElementById('tasksListContainer');
+
+      container.innerHTML = '';
+
+
+
+      if (tasks.length === 0) {
+
+        container.innerHTML = `<div class="bg-[#1F222E] p-6 text-center text-xs text-gray-400 rounded-2xl border border-[#3A331A]">No active homework tasks.</div>`;
+
+        return;
+
+      }
+
+
+
+      tasks.forEach(task => {
+
+        const priorityColor = task.priority === 'High' ? 'bg-red-950 text-red-300' :
+
+                              task.priority === 'Medium' ? 'bg-amber-950 text-amber-300' : 'bg-blue-950 text-blue-300';
+
+
+
+        const div = document.createElement('div');
+
+        div.className = `bg-[#1F222E] p-4 rounded-2xl border transition-all flex items-center justify-between ${
+
+          task.completed ? 'border-gray-800 opacity-60' : 'border-[#3A331A] hover:border-[#D4AF37]'
+
+        }`;
+
+
+
+        div.innerHTML = `
+
+          <div class="flex items-start space-x-3 flex-1">
+
+            <button onclick="toggleTask(${task.id})" class="mt-0.5 w-5 h-5 rounded-md border flex items-center justify-center transition-colors ${
+
+              task.completed ? 'bg-[#D4AF37] border-[#D4AF37] text-black' : 'border-gray-500 hover:border-[#D4AF37]'
+
+            }">
+
+              ${task.completed ? '<i class="fa-solid fa-check text-xs"></i>' : ''}
+
+            </button>
+
+            <div>
+
+              <h4 class="font-bold text-sm ${task.completed ? 'line-through text-gray-400' : 'text-gray-100'}">
+
+                ${task.title}
+
+              </h4>
+
+              <div class="flex items-center space-x-2 mt-1">
+
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-[#0B0C10] text-[#D4AF37] border border-[#3A331A]">
+
+                  ${task.course}
+
+                </span>
+
+                <span class="text-xs text-gray-400">Due: ${task.dueDate}</span>
+
+                <span class="text-[10px] px-2 py-0.5 rounded-md font-bold ${priorityColor}">
+
+                  ${task.priority}
+
+                </span>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <button onclick="deleteTask(${task.id})" class="ml-3 p-2 text-gray-500 hover:text-red-400 hover:bg-red-950/40 rounded-xl transition-colors" title="Delete assignment">
+
+            <i class="fa-regular fa-trash-can text-sm"></i>
+
+          </button>
+
+        `;
+
+        container.appendChild(div);
+
+      });
+
+    }
+
+
+
+    function toggleTask(id) {
+
+      tasks = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
+
+      saveTasks();
+
+    }
+
+
+
+    function deleteTask(id) {
+
+      tasks = tasks.filter(t => t.id !== id);
+
+      saveTasks();
+
+    }
+
+
+
+    function saveNewTask() {
+
+      const title = document.getElementById('newTaskTitle').value.trim();
+
+      const course = document.getElementById('newTaskCourse').value;
+
+      const dueDate = document.getElementById('newTaskDueDate').value;
+
+      const priority = document.getElementById('newTaskPriority').value;
+
+
+
+      if (!title || !dueDate) { alert("Please complete task title and due date."); return; }
+
+
+
+      tasks.push({ id: Date.now(), title, course, dueDate, priority, completed: false });
+
+      saveTasks();
+
+      closeModal('taskModal');
+
+    }
+
+
+
+    // 5. FOOD & HYDRATION RENDERER
+
+    function renderFood() {
+
+      const container = document.getElementById('foodSlotsContainer');
+
+      container.innerHTML = '';
+
+
+
+      let totalWaterOz = 0;
+
+      let totalWaterTarget = 0;
+
+      let selectedMealsCount = 0;
+
+
+
+      FOOD_SLOTS_CONFIG.forEach(slot => {
+
+        totalWaterTarget += slot.waterTarget;
+
+        const slotLog = foodLogs[slot.id] || { selectedOptionIdx: null, loggedWater: false };
+
+
+
+        if (slotLog.loggedWater) totalWaterOz += slot.waterTarget;
+
+        if (slotLog.selectedOptionIdx !== null && slotLog.selectedOptionIdx !== undefined) selectedMealsCount++;
+
+
+
+        const div = document.createElement('div');
+
+        div.className = "bg-[#1F222E] p-4 rounded-2xl border border-[#3A331A] space-y-3";
+
+
+
+        let optionsHTML = slot.options.map((optionText, idx) => {
+
+          const isSelected = slotLog.selectedOptionIdx === idx;
+
+          return `
+
+            <button onclick="selectFoodOption(${slot.id}, ${idx})" class="w-full text-left p-2.5 rounded-xl text-xs flex items-center justify-between transition-all ${
+
+              isSelected 
+
+                ? 'bg-[#3A331A] border border-[#D4AF37] text-[#FFD700] font-bold shadow-sm' 
+
+                : 'bg-[#0B0C10] border border-[#3A331A]/60 text-gray-300 hover:border-gray-500'
+
+            }">
+
+              <span>${optionText}</span>
+
+              <div class="w-4 h-4 rounded-md border flex items-center justify-center ${
+
+                isSelected ? 'bg-[#D4AF37] border-[#D4AF37] text-black' : 'border-gray-600'
+
+              }">
+
+                ${isSelected ? '<i class="fa-solid fa-check text-[10px]"></i>' : ''}
+
+              </div>
+
+            </button>
+
+          `;
+
+        }).join('');
+
+
+
+        div.innerHTML = `
+
+          <div class="flex justify-between items-center">
+
+            <div class="flex items-center space-x-2">
+
+              <i class="fa-solid fa-utensils text-[#D4AF37] text-xs"></i>
+
+              <h3 class="font-bold text-xs text-gray-100">${slot.title}</h3>
+
+            </div>
+
+            <button onclick="toggleWater(${slot.id})" class="px-2.5 py-1 rounded-xl text-xs font-bold flex items-center space-x-1 transition-all ${
+
+              slotLog.loggedWater 
+
+                ? 'bg-blue-600 text-white shadow-sm' 
+
+                : 'bg-[#0B0C10] text-gray-400 border border-[#3A331A] hover:border-blue-500'
+
+            }">
+
+              <i class="fa-solid fa-droplet text-[10px]"></i>
+
+              <span>+${slot.waterTarget} oz</span>
+
+            </button>
+
+          </div>
+
+          <div class="space-y-1.5 pt-1">
+
+            <p class="text-[10px] text-gray-400 font-medium uppercase tracking-wide">Select meal item eaten:</p>
+
+            ${optionsHTML}
+
+          </div>
+
+        `;
+
+        container.appendChild(div);
+
+      });
+
+
+
+      // Update Header Progress
+
+      document.getElementById('waterLoggedNum').innerText = totalWaterOz;
+
+      document.getElementById('waterTargetNum').innerText = ` / ${totalWaterTarget} oz`;
+
+      document.getElementById('mealsLoggedSummary').innerText = `${selectedMealsCount} of 9 Daily Intervals`;
+
+      const pct = Math.min(100, (totalWaterOz / totalWaterTarget) * 100);
+
+      document.getElementById('waterProgressBar').style.width = `${pct}%`;
+
+    }
+
+
+
+    function selectFoodOption(slotId, optionIdx) {
+
+      const current = foodLogs[slotId] || { selectedOptionIdx: null, loggedWater: false };
+
+      foodLogs[slotId] = { 
+
+        ...current, 
+
+        selectedOptionIdx: current.selectedOptionIdx === optionIdx ? null : optionIdx 
+
+      };
+
+      saveFood();
+
+    }
+
+
+
+    function toggleWater(slotId) {
+
+      const current = foodLogs[slotId] || { selectedOptionIdx: null, loggedWater: false };
+
+      foodLogs[slotId] = { ...current, loggedWater: !current.loggedWater };
+
+      saveFood();
+
+    }
+
+
+
+    // 7. GOALS RENDERER
+
+    function renderGoals() {
+
+      const container = document.getElementById('goalsListContainer');
+
+      container.innerHTML = '';
+
+
+
+      if (goals.length === 0) {
+
+        container.innerHTML = `<div class="bg-[#1F222E] p-6 text-center text-xs text-gray-400 rounded-2xl border border-[#3A331A]">No active goals.</div>`;
+
+        return;
+
+      }
+
+
+
+      goals.forEach(goal => {
+
+        const div = document.createElement('div');
+
+        div.className = `bg-[#1F222E] p-4 rounded-2xl border transition-all flex items-center justify-between ${
+
+          goal.completed ? 'border-gray-800 opacity-60' : 'border-[#3A331A] hover:border-[#D4AF37]'
+
+        }`;
+
+
+
+        div.innerHTML = `
+
+          <div class="flex items-center space-x-3 flex-1">
+
+            <button onclick="toggleGoal(${goal.id})" class="w-5 h-5 rounded-md border flex items-center justify-center transition-colors ${
+
+              goal.completed ? 'bg-[#D4AF37] border-[#D4AF37] text-black' : 'border-gray-500 hover:border-[#D4AF37]'
+
+            }">
+
+              ${goal.completed ? '<i class="fa-solid fa-check text-xs"></i>' : ''}
+
+            </button>
+
+            <div>
+
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-[#0B0C10] text-[#D4AF37] border border-[#3A331A]">
+
+                ${goal.category}
+
+              </span>
+
+              <p class="text-xs mt-1.5 font-medium ${goal.completed ? 'line-through text-gray-400' : 'text-gray-100'}">
+
+                ${goal.text}
+
+              </p>
+
+            </div>
+
+          </div>
+
+          <button onclick="deleteGoal(${goal.id})" class="p-2 text-gray-500 hover:text-red-400 transition-colors" title="Delete goal">
+
+            <i class="fa-regular fa-trash-can text-sm"></i>
+
+          </button>
+
+        `;
+
+        container.appendChild(div);
+
+      });
+
+    }
+
+
+
+    function toggleGoal(id) {
+
+      goals = goals.map(g => g.id === id ? { ...g, completed: !g.completed } : g);
+
+      saveGoals();
+
+    }
+
+
+
+    function deleteGoal(id) {
+
+      goals = goals.filter(g => g.id !== id);
+
+      saveGoals();
+
+    }
+
+
+
+    function saveNewGoal() {
+
+      const category = document.getElementById('newGoalCategory').value;
+
+      const text = document.getElementById('newGoalText').value.trim();
+
+
+
+      if (!text) { alert("Please type your goal target."); return; }
+
+
+
+      goals.push({ id: Date.now(), category, text, completed: false });
+
+      saveGoals();
+
+      closeModal('goalModal');
+
+    }
+
+
+
+    // MODAL CONTROL
+
+    function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+  </script>
+
+  <script>if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(console.error));</script>
+</body>
+
+</html>
